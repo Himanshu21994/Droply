@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "@/node_modules/react-hook-form/dist";
+import  { useForm }  from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSignIn } from "@/node_modules/@clerk/nextjs/dist/types";
 import { useRouter } from "next/navigation";

@@ -7,4 +7,4 @@ const sql = neon(process.env.DATABASE_URL!)
 
 export const db = drizzle(sql, {schema})
 
-export { sql }      // for raw sql queries, don't want to use neon directly elsewhere
+export { sql } // for raw sql queries, don't want to use neon directly elsewhere

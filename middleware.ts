@@ -1,5 +1,5 @@
 // Ye file Clerk authentication ko Next.js ke routes pe apply karti hai, taki protected routes pe user ki identity check ho sake!
-import { clerkMiddleware, createRouteMatcher, auth } from '@/node_modules/@clerk/nextjs/dist/types/server'
+import { clerkMiddleware, createRouteMatcher, auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/dist/server/web/spec-extension/response'
 
 // Ye function batata hai ki kaunse pages sabke liye open hain—login/signup ya home page, jahan authentication mandatory nahi hai!
