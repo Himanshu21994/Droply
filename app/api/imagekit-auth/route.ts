@@ -11,7 +11,7 @@ const imagekit = new ImageKit({
 
 export async function GET() {
   try {
-    // Check authentication
+    // Check authentication 
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
