@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { db } from "@/app/lib/db";
-import { files } from "@/app/lib/db/schema";
+import { db } from "@/lib/db";
+import { files } from "@/lib/db/schema";
 
 export async function POST(request: NextRequest) {
   try {

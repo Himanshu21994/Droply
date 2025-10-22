@@ -1,10 +1,10 @@
-import { files } from "@/app/lib/db/schema";
+import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import ImageKit from "imagekit";
 import { v4 as uuidv4 } from 'uuid';
-import { db } from "@/app/lib/db";
+import { db } from "@/lib/db";
 
 // imagekit credentials
 const imagekit = new ImageKit({

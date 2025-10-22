@@ -43,5 +43,5 @@ export const filesRelations = relations(files, ({ one, many }) => ({
 }))
 
 // TypeScript type for a row returned from the 'files' table (for type safety in code)
-export const File =typeof files.$inferSelect
+export type File = typeof files.$inferSelect
 export type NewFile = typeof files.$inferInsert
