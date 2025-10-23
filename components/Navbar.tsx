@@ -125,14 +125,14 @@ export default function Navbar({ user }: NavbarProps) {
 
   return (
     <header
-      className={`bg-default-50 border-b border-default-200 sticky top-0 z-50 transition-shadow ${isScrolled ? "shadow-sm" : ""}`}
+      className={`bg-gradient-dark border-b border-[#252d4a] sticky top-0 z-50 transition-shadow ${isScrolled ? "shadow-glow" : ""}`}
     >
       <div className="container mx-auto py-3 md:py-4 px-4 md:px-6">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 z-10">
-            <CloudUpload className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold">Droply</h1>
+          <Link href="/" className="flex items-center gap-2 z-10 hover:opacity-80 transition-opacity">
+            <CloudUpload className="h-6 w-6 text-[#0066ff]" />
+            <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">Droply</h1>
           </Link>
 
           {/* Desktop Navigation */}
@@ -140,12 +140,12 @@ export default function Navbar({ user }: NavbarProps) {
             {/* Show these buttons when user is signed out */}
             <SignedOut>
               <Link href="/sign-in">
-                <Button variant="flat" color="primary">
+                <Button variant="flat" color="primary" className="text-white hover:bg-[#252d4a]">
                   Sign In
                 </Button>
               </Link>
               <Link href="/sign-up">
-                <Button variant="solid" color="primary">
+                <Button variant="solid" color="primary" className="bg-gradient-primary hover:shadow-glow">
                   Sign Up
                 </Button>
               </Link>
@@ -156,7 +156,7 @@ export default function Navbar({ user }: NavbarProps) {
               <div className="flex items-center gap-4">
                 {!isOnDashboard && (
                   <Link href="/dashboard">
-                    <Button variant="flat" color="primary">
+                    <Button variant="flat" color="primary" className="text-white hover:bg-[#252d4a]">
                       Dashboard
                     </Button>
                   </Link>
@@ -164,8 +164,8 @@ export default function Navbar({ user }: NavbarProps) {
                 <div className="relative group">
                   <Button
                     variant="flat"
-                    className="p-0 bg-transparent min-w-0"
-                    endContent={<ChevronDown className="h-4 w-4 ml-2" />}
+                    className="p-0 bg-transparent min-w-0 hover:bg-[#252d4a]"
+                    endContent={<ChevronDown className="h-4 w-4 ml-2 text-[#b0b5c1]" />}
                   >
                     <div className="flex items-center gap-2">
                       <Avatar
@@ -181,27 +181,27 @@ export default function Navbar({ user }: NavbarProps) {
                     </div>
                   </Button>
                   {/* Custom dropdown menu */}
-                  <div className="absolute right-0 mt-0 w-48 bg-default-50 rounded-lg shadow-lg border border-default-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="absolute right-0 mt-0 w-48 bg-[#1a1f3a] rounded-lg shadow-lg border border-[#252d4a] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     <button
                       onClick={() => router.push("/dashboard?tab=profile")}
-                      className="w-full text-left px-4 py-3 hover:bg-default-100 first:rounded-t-lg first-child:rounded-t-lg transition-colors"
+                      className="w-full text-left px-4 py-3 hover:bg-[#252d4a] first:rounded-t-lg first-child:rounded-t-lg transition-colors"
                     >
-                      <div className="font-medium text-default-700">Profile</div>
-                      <div className="text-sm text-default-500">{userDetails.email || "View your profile"}</div>
+                      <div className="font-medium text-white">Profile</div>
+                      <div className="text-sm text-[#b0b5c1]">{userDetails.email || "View your profile"}</div>
                     </button>
                     <button
                       onClick={() => router.push("/dashboard")}
-                      className="w-full text-left px-4 py-3 hover:bg-default-100 transition-colors border-t border-default-200"
+                      className="w-full text-left px-4 py-3 hover:bg-[#252d4a] transition-colors border-t border-[#252d4a]"
                     >
-                      <div className="font-medium text-default-700">My Files</div>
-                      <div className="text-sm text-default-500">Manage your files</div>
+                      <div className="font-medium text-white">My Files</div>
+                      <div className="text-sm text-[#b0b5c1]">Manage your files</div>
                     </button>
                     <button
                       onClick={handleSignOut}
-                      className="w-full text-left px-4 py-3 hover:bg-danger/10 last:rounded-b-lg transition-colors border-t border-default-200 text-danger"
+                      className="w-full text-left px-4 py-3 hover:bg-red-500/10 last:rounded-b-lg transition-colors border-t border-[#252d4a] text-red-400"
                     >
                       <div className="font-medium">Sign Out</div>
-                      <div className="text-sm text-danger/70">Sign out of your account</div>
+                      <div className="text-sm text-red-400/70">Sign out of your account</div>
                     </button>
                   </div>
                 </div>
@@ -237,7 +237,7 @@ export default function Navbar({ user }: NavbarProps) {
           {/* Mobile Menu Overlay */}
           {isMobileMenuOpen && (
             <div
-              className="fixed inset-0 bg-black/20 z-40 md:hidden"
+              className="fixed inset-0 bg-black/40 z-40 md:hidden"
               onClick={() => setIsMobileMenuOpen(false)}
               aria-hidden="true"
             />
@@ -246,9 +246,9 @@ export default function Navbar({ user }: NavbarProps) {
           {/* Mobile Menu */}
           <div
             ref={mobileMenuRef}
-            className={`fixed top-0 right-0 bottom-0 w-4/5 max-w-sm bg-default-50 z-40 flex flex-col pt-20 px-6 shadow-xl transition-transform duration-300 ease-in-out ${
+            className={`fixed top-0 right-0 bottom-0 w-4/5 max-w-sm bg-[#0a0e27] z-40 flex flex-col pt-20 px-6 shadow-xl transition-transform duration-300 ease-in-out ${
               isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-            } md:hidden`}
+            } md:hidden border-l border-[#252d4a]`}
           >
             <SignedOut>
               <div className="flex flex-col gap-4 items-center">
@@ -257,7 +257,7 @@ export default function Navbar({ user }: NavbarProps) {
                   className="w-full"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Button variant="flat" color="primary" className="w-full">
+                  <Button variant="flat" color="primary" className="w-full text-white hover:bg-[#252d4a]">
                     Sign In
                   </Button>
                 </Link>
@@ -266,7 +266,7 @@ export default function Navbar({ user }: NavbarProps) {
                   className="w-full"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Button variant="solid" color="primary" className="w-full">
+                  <Button variant="solid" color="primary" className="w-full bg-gradient-primary hover:shadow-glow">
                     Sign Up
                   </Button>
                 </Link>
@@ -276,7 +276,7 @@ export default function Navbar({ user }: NavbarProps) {
             <SignedIn>
               <div className="flex flex-col gap-6">
                 {/* User info */}
-                <div className="flex items-center gap-3 py-4 border-b border-default-200">
+                <div className="flex items-center gap-3 py-4 border-b border-[#252d4a]">
                   <Avatar
                     name={userDetails.initials}
                     size="md"
@@ -285,8 +285,8 @@ export default function Navbar({ user }: NavbarProps) {
                     fallback={<User className="h-5 w-5" />}
                   />
                   <div>
-                    <p className="font-medium">{userDetails.displayName}</p>
-                    <p className="text-sm text-default-500">
+                    <p className="font-medium text-white">{userDetails.displayName}</p>
+                    <p className="text-sm text-[#b0b5c1]">
                       {userDetails.email}
                     </p>
                   </div>
@@ -297,7 +297,7 @@ export default function Navbar({ user }: NavbarProps) {
                   {!isOnDashboard && (
                     <Link
                       href="/dashboard"
-                      className="py-2 px-3 hover:bg-default-100 rounded-md transition-colors"
+                      className="py-2 px-3 hover:bg-[#252d4a] rounded-md transition-colors text-white"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Dashboard
@@ -305,13 +305,13 @@ export default function Navbar({ user }: NavbarProps) {
                   )}
                   <Link
                     href="/dashboard?tab=profile"
-                    className="py-2 px-3 hover:bg-default-100 rounded-md transition-colors"
+                    className="py-2 px-3 hover:bg-[#252d4a] rounded-md transition-colors text-white"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Profile
                   </Link>
                   <button
-                    className="py-2 px-3 text-left text-danger hover:bg-danger-50 rounded-md transition-colors mt-4"
+                    className="py-2 px-3 text-left text-red-400 hover:bg-red-500/10 rounded-md transition-colors mt-4"
                     onClick={() => {
                       setIsMobileMenuOpen(false);
                       handleSignOut();

@@ -1,0 +1,12 @@
+/* Modal z-index classes */
+.modal-backdrop {
+  @apply fixed inset-0 bg-black/40;
+}
+
+.modal-container {
+  @apply fixed inset-0 pointer-events-none flex items-center justify-center;
+}
+
+.modal-content {
+  @apply pointer-events-auto;
+}

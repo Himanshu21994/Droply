@@ -12,15 +12,22 @@ import {
   FolderPlus,
   ArrowRight,
 } from "lucide-react";
-import { addToast } from "@heroui/toast";
+import { useToast } from "@/components/ui/ToastContainer";
 import {
   Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
+  ModalContent as HeroModalContent,
+  ModalHeader as HeroModalHeader,
+  ModalBody as HeroModalBody,
+  ModalFooter as HeroModalFooter,
 } from "@heroui/modal";
 import axios from "axios";
+import ModalPortal from "@/components/ui/ModalPortal";
+
+// Wrapper components for HeroUI Modal to fix React 19 compatibility
+const ModalContent = HeroModalContent as unknown as React.ComponentType<any>;
+const ModalHeader = HeroModalHeader as unknown as React.ComponentType<any>;
+const ModalBody = HeroModalBody as unknown as React.ComponentType<any>;
+const ModalFooter = HeroModalFooter as unknown as React.ComponentType<any>;
 
 interface FileUploadFormProps {
   userId: string;
@@ -33,6 +40,7 @@ export default function FileUploadForm({
   onUploadSuccess,
   currentFolder = null,
 }: FileUploadFormProps) {
+  const { showToast } = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -116,10 +124,9 @@ export default function FileUploadForm({
         },
       });
 
-      addToast({
-        title: "Upload Successful",
+      showToast("Upload Successful", {
+        type: "success",
         description: `${file.name} has been uploaded successfully.`,
-        color: "success",
       });
 
       // Clear the file after successful upload
@@ -132,10 +139,9 @@ export default function FileUploadForm({
     } catch (error) {
       console.error("Error uploading file:", error);
       setError("Failed to upload file. Please try again.");
-      addToast({
-        title: "Upload Failed",
+      showToast("Upload Failed", {
+        type: "error",
         description: "We couldn't upload your file. Please try again.",
-        color: "danger",
       });
     } finally {
       setUploading(false);
@@ -144,27 +150,31 @@ export default function FileUploadForm({
 
   const handleCreateFolder = async () => {
     if (!folderName.trim()) {
-      addToast({
-        title: "Invalid Folder Name",
+      showToast("Invalid Folder Name", {
+        type: "error",
         description: "Please enter a valid folder name.",
-        color: "danger",
       });
       return;
     }
 
     setCreatingFolder(true);
+    console.log("Creating folder with name:", folderName, "parentId:", currentFolder);
 
     try {
-      await axios.post("/api/folders/create", {
+      const payload = {
         name: folderName.trim(),
-        userId: userId,
-        parentId: currentFolder,
-      });
+        parentId: currentFolder || undefined,
+      };
+      
+      console.log("Sending payload:", payload);
+      
+      const response = await axios.post("/api/folders/create", payload);
+      
+      console.log("Folder creation response:", response.data);
 
-      addToast({
-        title: "Folder Created",
+      showToast("Folder Created", {
+        type: "success",
         description: `Folder "${folderName}" has been created successfully.`,
-        color: "success",
       });
 
       // Reset folder name and close modal
@@ -173,14 +183,16 @@ export default function FileUploadForm({
 
       // Call the onUploadSuccess callback to refresh the file list
       if (onUploadSuccess) {
+        console.log("Calling onUploadSuccess callback");
         onUploadSuccess();
       }
-    } catch (error) {
-      console.error("Error creating folder:", error);
-      addToast({
-        title: "Folder Creation Failed",
-        description: "We couldn't create the folder. Please try again.",
-        color: "danger",
+    } catch (error: any) {
+      console.error("❌ Error creating folder:", error);
+      console.error("Error response:", error.response?.data);
+      console.error("Error status:", error.response?.status);
+      showToast("Folder Creation Failed", {
+        type: "error",
+        description: error.response?.data?.error || error.response?.data?.details || "We couldn't create the folder. Please try again.",
       });
     } finally {
       setCreatingFolder(false);
@@ -321,56 +333,64 @@ export default function FileUploadForm({
       </div>
 
       {/* Create Folder Modal */}
-      <Modal
-        isOpen={folderModalOpen}
-        onOpenChange={setFolderModalOpen}
-        backdrop="blur"
-        classNames={{
-          base: "border border-default-200 bg-default-5",
-          header: "border-b border-default-200",
-          footer: "border-t border-default-200",
-        }}
-      >
-        <ModalContent>
-          <ModalHeader className="flex gap-2 items-center">
-            <FolderPlus className="h-5 w-5 text-primary" />
-            <span>New Folder</span>
-          </ModalHeader>
-          <ModalBody>
-            <div className="space-y-4">
-              <p className="text-sm text-default-600">
-                Enter a name for your folder:
-              </p>
-              <Input
-                type="text"
-                label="Folder Name"
-                placeholder="My Images"
-                value={folderName}
-                onChange={(e) => setFolderName(e.target.value)}
-                autoFocus
-              />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              variant="flat"
-              color="default"
-              onClick={() => setFolderModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              onClick={handleCreateFolder}
-              isLoading={creatingFolder}
-              isDisabled={!folderName.trim()}
-              endContent={!creatingFolder && <ArrowRight className="h-4 w-4" />}
-            >
-              Create
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ModalPortal isOpen={folderModalOpen} onBackdropClick={() => setFolderModalOpen(false)}>
+        <Modal
+          isOpen={true}
+          onOpenChange={() => setFolderModalOpen(false)}
+          backdrop="transparent"
+          classNames={{
+            base: "border border-default-200 bg-default-50",
+            header: "border-b border-default-200",
+            footer: "border-t border-default-200",
+            backdrop: "hidden",
+          }}
+        >
+          <ModalContent>
+            <ModalHeader className="flex gap-2 items-center">
+              <FolderPlus className="h-5 w-5 text-primary" />
+              <span>New Folder</span>
+            </ModalHeader>
+            <ModalBody>
+              <div className="space-y-4">
+                <p className="text-sm text-default-600">
+                  Enter a name for your folder:
+                </p>
+                <Input
+                  type="text"
+                  label="Folder Name"
+                  placeholder="My Images"
+                  value={folderName}
+                  onChange={(e) => setFolderName(e.target.value)}
+                  autoFocus
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter" && folderName.trim()) {
+                      handleCreateFolder();
+                    }
+                  }}
+                />
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                variant="flat"
+                color="default"
+                onClick={() => setFolderModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                onClick={handleCreateFolder}
+                isLoading={creatingFolder}
+                isDisabled={!folderName.trim()}
+                endContent={!creatingFolder && <ArrowRight className="h-4 w-4" />}
+              >
+                Create
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </ModalPortal>
     </div>
   );
 }

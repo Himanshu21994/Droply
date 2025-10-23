@@ -14,7 +14,7 @@ const imagekit = new ImageKit({
 
 export async function DELETE(
   request: NextRequest,
-  props: { params: { fileId: string } }
+  props: { params: Promise<{ fileId: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -22,7 +22,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-  const { fileId } = props.params;
+  const { fileId } = await props.params;
 
     if (!fileId) {
       return NextResponse.json(

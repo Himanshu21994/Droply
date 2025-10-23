@@ -13,10 +13,11 @@ import {
 import { Divider } from "@heroui/divider";
 import { Tooltip } from "@heroui/tooltip";
 import { Card } from "@heroui/card";
-import { addToast } from "@heroui/toast";
 import { formatDistanceToNow, format } from "date-fns";
 import type { File as FileType } from "@/lib/db/schema";
 import axios from "axios";
+import { useToast } from "@/components/ui/ToastContainer";
+import { toastMessages } from "@/lib/toastMessages";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import FileEmptyState from "@/components/FileEmptyState";
 import FileIcon from "@/components/FileIcon";
@@ -37,6 +38,7 @@ export default function FileList({
   refreshTrigger = 0,
   onFolderChange,
 }: FileListProps) {
+  const { showToast } = useToast();
   const [files, setFiles] = useState<FileType[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
@@ -63,10 +65,9 @@ export default function FileList({
       setFiles(response.data);
     } catch (error) {
       console.error("Error fetching files:", error);
-      addToast({
-        title: "Error Loading Files",
+      showToast("Error Loading Files", {
+        type: "error",
         description: "We couldn't load your files. Please try again later.",
-        color: "danger",
       });
     } finally {
       setLoading(false);
@@ -114,19 +115,17 @@ export default function FileList({
 
       // Show toast
       const file = files.find((f) => f.id === fileId);
-      addToast({
-        title: file?.isStarred ? "Removed from Starred" : "Added to Starred",
+      showToast(file?.isStarred ? "Removed from Starred" : "Added to Starred", {
+        type: "success",
         description: `"${file?.name}" has been ${
           file?.isStarred ? "removed from" : "added to"
         } your starred files`,
-        color: "success",
       });
     } catch (error) {
       console.error("Error starring file:", error);
-      addToast({
-        title: "Action Failed",
+      showToast("Action Failed", {
+        type: "error",
         description: "We couldn't update the star status. Please try again.",
-        color: "danger",
       });
     }
   };
@@ -145,19 +144,17 @@ export default function FileList({
 
       // Show toast
       const file = files.find((f) => f.id === fileId);
-      addToast({
-        title: responseData.isTrash ? "Moved to Trash" : "Restored from Trash",
+      showToast(responseData.isTrash ? "Moved to Trash" : "Restored from Trash", {
+        type: "success",
         description: `"${file?.name}" has been ${
           responseData.isTrash ? "moved to trash" : "restored"
         }`,
-        color: "success",
       });
     } catch (error) {
       console.error("Error trashing file:", error);
-      addToast({
-        title: "Action Failed",
+      showToast("Action Failed", {
+        type: "error",
         description: "We couldn't update the file status. Please try again.",
-        color: "danger",
       });
     }
   };
@@ -176,10 +173,9 @@ export default function FileList({
         setFiles(files.filter((file) => file.id !== fileId));
 
         // Show success toast
-        addToast({
-          title: "File Permanently Deleted",
+        showToast("File Permanently Deleted", {
+          type: "success",
           description: `"${fileName}" has been permanently removed`,
-          color: "success",
         });
 
         // Close modal if it was open
@@ -189,10 +185,9 @@ export default function FileList({
       }
     } catch (error) {
       console.error("Error deleting file:", error);
-      addToast({
-        title: "Deletion Failed",
+      showToast("Deletion Failed", {
+        type: "error",
         description: "We couldn't delete the file. Please try again later.",
-        color: "danger",
       });
     }
   };
@@ -205,20 +200,18 @@ export default function FileList({
       setFiles(files.filter((file) => !file.isTrash));
 
       // Show toast
-      addToast({
-        title: "Trash Emptied",
+      showToast("Trash Emptied", {
+        type: "success",
         description: `All ${trashCount} items have been permanently deleted`,
-        color: "success",
       });
 
       // Close modal
       setEmptyTrashModalOpen(false);
     } catch (error) {
       console.error("Error emptying trash:", error);
-      addToast({
-        title: "Action Failed",
+      showToast("Action Failed", {
+        type: "error",
         description: "We couldn't empty the trash. Please try again later.",
-        color: "danger",
       });
     }
   };
@@ -226,13 +219,6 @@ export default function FileList({
   // Add this function to handle file downloads
   const handleDownloadFile = async (file: FileType) => {
     try {
-      // Show loading toast
-      const loadingToastId = addToast({
-        title: "Preparing Download",
-        description: `Getting "${file.name}" ready for download...`,
-        color: "primary",
-      });
-
       // For images, we can use the ImageKit URL directly with optimized settings
       if (file.type.startsWith("image/")) {
         // Create a download-optimized URL with ImageKit
@@ -255,11 +241,10 @@ export default function FileList({
         link.download = file.name;
         document.body.appendChild(link);
 
-        // Remove loading toast and show success toast
-        addToast({
-          title: "Download Ready",
+        // Show success toast
+        showToast("Download Ready", {
+          type: "success",
           description: `"${file.name}" is ready to download.`,
-          color: "success",
         });
 
         // Trigger download
@@ -285,11 +270,10 @@ export default function FileList({
         link.download = file.name;
         document.body.appendChild(link);
 
-        // Remove loading toast and show success toast
-        addToast({
-          title: "Download Ready",
+        // Show success toast
+        showToast("Download Ready", {
+          type: "success",
           description: `"${file.name}" is ready to download.`,
-          color: "success",
         });
 
         // Trigger download
@@ -301,10 +285,9 @@ export default function FileList({
       }
     } catch (error) {
       console.error("Error downloading file:", error);
-      addToast({
-        title: "Download Failed",
+      showToast("Download Failed", {
+        type: "error",
         description: "We couldn't download the file. Please try again later.",
-        color: "danger",
       });
     }
   };

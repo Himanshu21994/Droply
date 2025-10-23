@@ -20,6 +20,14 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    rules: {
+      "@next/next/no-html-link-for-pages": "off",
+      "@stylelint/declaration-no-important": "off",
+    },
+    // Allow dynamic z-index styles for modal stacking
+    files: ["**/ModalPortal.tsx"],
+  },
 ];
 
 export default eslintConfig;
