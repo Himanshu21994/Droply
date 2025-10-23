@@ -1,5 +1,5 @@
 {
-  "id": "4e5c613f-4e99-45dd-9b6c-62d54d4e88ff",
+  "id": "4e0a9188-b9ca-458e-9480-a15fa38bac8b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -47,6 +47,12 @@
         },
         "thumbnail_url": {
           "name": "thumbnail_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "imagekit_file_id": {
+          "name": "imagekit_file_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false

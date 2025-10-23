@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Providers } from "./providers";
+import { dark } from "@clerk/themes";
 import "../styles/globals.css";
+import { Providers } from "./providers";
+import { siteConfig } from "@/config/site";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Droply",
-  description: "Secure cloud storage for your images, powered by ImageKit",
+  title: siteConfig.name,
+  description: siteConfig.description,
 };
 
 export default function RootLayout({
@@ -20,11 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" className="dark">
-        <body
-          className={`${inter.variable} antialiased bg-background text-foreground`}
-        >
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+      }}
+    >
+      <html lang="en" className="dark" suppressHydrationWarning={true}>
+        <body className={inter.className}>
           <Providers>{children}</Providers>
         </body>
       </html>

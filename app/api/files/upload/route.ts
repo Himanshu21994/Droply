@@ -33,7 +33,9 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "File is required" }, { status: 400 });
         }
 
+        // Check if parentId is valid
         if(parentId){
+            // Agar parentId hai, toh parent folder ko check karo
             const [parentFolder] = await db
                 .select()
                 .from(files)
@@ -43,11 +45,17 @@ export async function POST(request: NextRequest) {
                         eq(files.userId, userId),
                         eq(files.isFolder, true)
                     )
-                
-                )
-        }else{
-            return NextResponse.json({ error: "Parent folder not found" }, { status: 404 });
-        }
+                );
+            
+            // Agar parent folder nahi mila, toh error do
+            if(!parentFolder){
+                 return NextResponse.json({ error: "Parent folder not found" }, { status: 404 });
+            }
+        } 
+        // Agar parentId null hai (root folder), toh kuch check nahi karna, simply upload karo.
+        // Purana 'else' block yahan se hata diya gaya hai.
+        // --- LOGIC FIX END ---
+
 
         if(!file.type.startsWith("image/")  && (file.type !== "application/pdf")){
             return NextResponse.json({ error: "Only images and PDFs are supported" }, { status: 400 });
@@ -76,6 +84,7 @@ export async function POST(request: NextRequest) {
             type: file.type,
             fileUrl: uploadResponse.url,
             thumbnailUrl: uploadResponse.thumbnailUrl || null,
+            imagekitFileId: uploadResponse.fileId, 
             userId: userId,
             parentId: parentId,
             isFolder: false,
@@ -92,6 +101,7 @@ export async function POST(request: NextRequest) {
          });
 
     }catch (error) {
+        console.error("Error uploading file:", error); 
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

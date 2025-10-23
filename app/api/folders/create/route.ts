@@ -38,11 +38,19 @@ export async function POST(request: NextRequest) {
                     return NextResponse.json({ error: "Parent folder not found" }, { status: 404 });
                 };
         }
+        
+        const newFolderId = uuidv4();
+
+        // Path ko conditionally banayein
+        const folderPath = parentId 
+            ? `/folder/${parentId}/${newFolderId}` 
+            : `/folder/${newFolderId}`;
+
         //create a folder in database
         const folderData = {
-            id: uuidv4(),
+            id: newFolderId, // Pehle generate kiya gaya ID use karein
             name: name.trim(),
-            path: `/folder/${parentId}/${uuidv4()}`,
+            path: folderPath, // Corrected path use karein
             size: 0,
             fileUrl: "",
             thumbnailUrl: null,
@@ -65,6 +73,7 @@ export async function POST(request: NextRequest) {
          });
 
     }catch (error) {
+        console.error("Error creating folder:", error); 
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

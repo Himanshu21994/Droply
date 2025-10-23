@@ -32,51 +32,20 @@ export async function DELETE() {
       );
     }
 
+    // --- LOGIC FIX START ---
     // Delete files from ImageKit
     const deletePromises = trashedFiles
-      .filter((file) => !file.isFolder) // Skip folders
+      // Sirf files delete karein (folders nahi) aur jinka imagekitFileId ho
+      .filter((file) => !file.isFolder && file.imagekitFileId) 
       .map(async (file) => {
         try {
-          let imagekitFileId = null;
-
-          if (file.fileUrl) {
-            const urlWithoutQuery = file.fileUrl.split("?")[0];
-            imagekitFileId = urlWithoutQuery.split("/").pop();
-          }
-
-          if (!imagekitFileId && file.path) {
-            imagekitFileId = file.path.split("/").pop();
-          }
-
-          if (imagekitFileId) {
-            try {
-              const searchResults = await imagekit.listFiles({
-                name: imagekitFileId,
-                limit: 1,
-              });
-
-              if (searchResults && searchResults.length > 0) {
-                const firstResult: any = searchResults[0];
-                if (firstResult && (firstResult.fileId || firstResult.fileId === 0)) {
-                  await imagekit.deleteFile(firstResult.fileId);
-                } else {
-                  await imagekit.deleteFile(imagekitFileId);
-                }
-              } else {
-                await imagekit.deleteFile(imagekitFileId);
-              }
-            } catch (searchError) {
-              console.error(
-                `Error searching for file in ImageKit:`,
-                searchError
-              );
-              await imagekit.deleteFile(imagekitFileId);
-            }
-          }
+          // Seedhe database se mili ID ka use karein
+          await imagekit.deleteFile(file.imagekitFileId!); 
         } catch (error) {
-          console.error(`Error deleting file ${file.id} from ImageKit:`, error);
+          console.error(`Error deleting file ${file.imagekitFileId} from ImageKit:`, error);
         }
       });
+    // --- LOGIC FIX END ---
 
     // Wait for all ImageKit deletions to complete (or fail)
     await Promise.allSettled(deletePromises);

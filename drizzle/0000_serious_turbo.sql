@@ -6,6 +6,7 @@ CREATE TABLE "files" (
 	"type" text NOT NULL,
 	"file_url" text NOT NULL,
 	"thumbnail_url" text,
+	"imagekit_file_id" text,
 	"user_id" text NOT NULL,
 	"parent_id" uuid,
 	"is_folder" boolean DEFAULT false NOT NULL,

@@ -41,48 +41,20 @@ export async function DELETE(
       return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
-    // Delete file from ImageKit if it's not a folder
-    if (!file.isFolder) {
+   
+    // Delete file from ImageKit if it's not a folder aur agar ID exist karta hai
+    if (!file.isFolder && file.imagekitFileId) {
       try {
-        let imagekitFileId = null;
-
-        if (file.fileUrl) {
-          const urlWithoutQuery = file.fileUrl.split("?")[0];
-          imagekitFileId = urlWithoutQuery.split("/").pop();
-        }
-
-        if (!imagekitFileId && file.path) {
-          imagekitFileId = file.path.split("/").pop();
-        }
-
-        if (imagekitFileId) {
-          try {
-            const searchResults = await imagekit.listFiles({
-              name: imagekitFileId,
-              limit: 1,
-            });
-
-            if (searchResults && searchResults.length > 0) {
-              const firstResult: any = searchResults[0];
-              // search result may be a file or folder object; ensure we have a fileId
-              if (firstResult && (firstResult.fileId || firstResult.fileId === 0)) {
-                await imagekit.deleteFile(firstResult.fileId);
-              } else {
-                // fallback to deleting by the derived id
-                await imagekit.deleteFile(imagekitFileId);
-              }
-            } else {
-              await imagekit.deleteFile(imagekitFileId);
-            }
-          } catch (searchError) {
-            console.error(`Error searching for file in ImageKit:`, searchError);
-            await imagekit.deleteFile(imagekitFileId);
-          }
-        }
+        // Seedhe database se mili ID ka use karein
+        await imagekit.deleteFile(file.imagekitFileId);
       } catch (error) {
-        console.error(`Error deleting file ${fileId} from ImageKit:`, error);
+        // Agar ImageKit delete fail hota hai, toh bhi database se delete karne ki koshish karein
+        // lekin error ko log karein
+        console.error(`Error deleting file ${file.imagekitFileId} from ImageKit:`, error);
       }
     }
+    
+
 
     // Delete file from database
     const [deletedFile] = await db

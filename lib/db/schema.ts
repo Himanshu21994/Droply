@@ -13,7 +13,7 @@ export const files = pgTable("files", {
     // storage information
     fileUrl: text("file_url").notNull(), // url to access file
     thumbnailUrl: text("thumbnail_url"), // url to access thumbnail
-
+    imagekitFileId: text("imagekit_file_id"), 
     // Ownership
     userId: text("user_id").notNull(), 
     parentId: uuid("parent_id"),     // Parent folder if (null => root folder)

@@ -9,7 +9,7 @@ if(!process.env.DATABASE_URL){
 
 export default defineConfig({
   out: './drizzle',
-  schema: './app/lib/db/schema.ts',
+  schema: './lib/db/schema.ts',
   dialect: 'postgresql',
   dbCredentials: {
     url: process.env.DATABASE_URL!  // non-null assertion since we check above  
