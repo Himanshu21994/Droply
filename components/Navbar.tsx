@@ -5,36 +5,10 @@ import { useClerk, SignedIn, SignedOut } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { CloudUpload, ChevronDown, User, Menu, X } from "lucide-react";
-import {
-  Dropdown as RawDropdown,
-  DropdownTrigger as RawDropdownTrigger,
-  DropdownMenu as RawDropdownMenu,
-  DropdownItem as RawDropdownItem,
-} from "@heroui/dropdown";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { useState, useEffect, useRef } from "react";
-
-// Create lightweight wrappers to satisfy TypeScript JSX typing for HeroUI dropdown exports
-const Dropdown: React.FC<any> = (props) => {
-  const Comp = RawDropdown as unknown as React.ComponentType<any>;
-  return React.createElement(Comp, props);
-};
-
-const DropdownTrigger: React.FC<any> = (props) => {
-  const Comp = RawDropdownTrigger as unknown as React.ComponentType<any>;
-  return React.createElement(Comp, props);
-};
-
-const DropdownMenu: React.FC<any> = (props) => {
-  const Comp = RawDropdownMenu as unknown as React.ComponentType<any>;
-  return React.createElement(Comp, props);
-};
-
-const DropdownItem: React.FC<any> = (props) => {
-  const Comp = RawDropdownItem as unknown as React.ComponentType<any>;
-  return React.createElement(Comp, props);
-};
+import { Card, CardBody } from "@heroui/card";
 
 interface SerializedUser {
   id: string;
@@ -187,53 +161,50 @@ export default function Navbar({ user }: NavbarProps) {
                     </Button>
                   </Link>
                 )}
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button
-                      variant="flat"
-                      className="p-0 bg-transparent min-w-0"
-                      endContent={<ChevronDown className="h-4 w-4 ml-2" />}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Avatar
-                          name={userDetails.initials}
-                          size="sm"
-                          src={user?.imageUrl || undefined}
-                          className="h-8 w-8 flex-shrink-0"
-                          fallback={<User className="h-4 w-4" />}
-                        />
-                        <span className="text-default-600 hidden sm:inline">
-                          {userDetails.displayName}
-                        </span>
-                      </div>
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu aria-label="User actions">
-                    <DropdownItem
-                      key="profile"
-                      description={userDetails.email || "View your profile"}
+                <div className="relative group">
+                  <Button
+                    variant="flat"
+                    className="p-0 bg-transparent min-w-0"
+                    endContent={<ChevronDown className="h-4 w-4 ml-2" />}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        name={userDetails.initials}
+                        size="sm"
+                        src={user?.imageUrl || undefined}
+                        className="h-8 w-8 shrink-0"
+                        fallback={<User className="h-4 w-4" />}
+                      />
+                      <span className="text-default-600 hidden sm:inline">
+                        {userDetails.displayName}
+                      </span>
+                    </div>
+                  </Button>
+                  {/* Custom dropdown menu */}
+                  <div className="absolute right-0 mt-0 w-48 bg-default-50 rounded-lg shadow-lg border border-default-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <button
                       onClick={() => router.push("/dashboard?tab=profile")}
+                      className="w-full text-left px-4 py-3 hover:bg-default-100 first:rounded-t-lg first-child:rounded-t-lg transition-colors"
                     >
-                      Profile
-                    </DropdownItem>
-                    <DropdownItem
-                      key="files"
-                      description="Manage your files"
+                      <div className="font-medium text-default-700">Profile</div>
+                      <div className="text-sm text-default-500">{userDetails.email || "View your profile"}</div>
+                    </button>
+                    <button
                       onClick={() => router.push("/dashboard")}
+                      className="w-full text-left px-4 py-3 hover:bg-default-100 transition-colors border-t border-default-200"
                     >
-                      My Files
-                    </DropdownItem>
-                    <DropdownItem
-                      key="logout"
-                      description="Sign out of your account"
-                      className="text-danger"
-                      color="danger"
+                      <div className="font-medium text-default-700">My Files</div>
+                      <div className="text-sm text-default-500">Manage your files</div>
+                    </button>
+                    <button
                       onClick={handleSignOut}
+                      className="w-full text-left px-4 py-3 hover:bg-danger/10 last:rounded-b-lg transition-colors border-t border-default-200 text-danger"
                     >
-                      Sign Out
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
+                      <div className="font-medium">Sign Out</div>
+                      <div className="text-sm text-danger/70">Sign out of your account</div>
+                    </button>
+                  </div>
+                </div>
               </div>
             </SignedIn>
           </div>
@@ -245,7 +216,7 @@ export default function Navbar({ user }: NavbarProps) {
                 name={userDetails.initials}
                 size="sm"
                 src={user?.imageUrl || undefined}
-                className="h-8 w-8 flex-shrink-0"
+                className="h-8 w-8 shrink-0"
                 fallback={<User className="h-4 w-4" />}
               />
             </SignedIn>
@@ -310,7 +281,7 @@ export default function Navbar({ user }: NavbarProps) {
                     name={userDetails.initials}
                     size="md"
                     src={user?.imageUrl || undefined}
-                    className="h-10 w-10 flex-shrink-0"
+                    className="h-10 w-10 shrink-0"
                     fallback={<User className="h-5 w-5" />}
                   />
                   <div>
