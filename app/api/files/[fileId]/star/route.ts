@@ -47,7 +47,7 @@ export async function PATCH(
 
         return NextResponse.json(updatedFile);
 
-    }catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to update the file" }, { status: 500 });
     }
 }

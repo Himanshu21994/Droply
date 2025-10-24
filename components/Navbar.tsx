@@ -8,7 +8,6 @@ import { CloudUpload, ChevronDown, User, Menu, X } from "lucide-react";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { useState, useEffect, useRef } from "react";
-import { Card, CardBody } from "@heroui/card";
 
 interface SerializedUser {
   id: string;

@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         console.log("Folder path:", folderPath);
 
         //create a folder in database
-        const folderData: any = {
+        const folderData: typeof files.$inferInsert = {
             id: newFolderId,
             name: name.trim(),
             path: folderPath,

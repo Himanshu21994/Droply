@@ -17,7 +17,6 @@ import { formatDistanceToNow, format } from "date-fns";
 import type { File as FileType } from "@/lib/db/schema";
 import axios from "axios";
 import { useToast } from "@/components/ui/ToastContainer";
-import { toastMessages } from "@/lib/toastMessages";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import FileEmptyState from "@/components/FileEmptyState";
 import FileIcon from "@/components/FileIcon";
@@ -77,6 +76,7 @@ export default function FileList({
   // Fetch files when userId, refreshTrigger, or currentFolder changes
   useEffect(() => {
     fetchFiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, refreshTrigger, currentFolder]);
 
   // Filter files based on active tab

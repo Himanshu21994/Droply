@@ -40,7 +40,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   warningMessage,
 }) => {
   // Cast ModalContent for React 19 compatibility
-  const ModalContentComponent = ModalContent as React.ComponentType<any>;
+  const ModalContentComponent = ModalContent as unknown as React.ComponentType<{ children: React.ReactNode }>;
 
   return (
     <ModalPortal 

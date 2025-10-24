@@ -24,10 +24,10 @@ import axios from "axios";
 import ModalPortal from "@/components/ui/ModalPortal";
 
 // Wrapper components for HeroUI Modal to fix React 19 compatibility
-const ModalContent = HeroModalContent as unknown as React.ComponentType<any>;
-const ModalHeader = HeroModalHeader as unknown as React.ComponentType<any>;
-const ModalBody = HeroModalBody as unknown as React.ComponentType<any>;
-const ModalFooter = HeroModalFooter as unknown as React.ComponentType<any>;
+const ModalContent = HeroModalContent as unknown as React.ComponentType<Record<string, unknown>>;
+const ModalHeader = HeroModalHeader as unknown as React.ComponentType<Record<string, unknown>>;
+const ModalBody = HeroModalBody as unknown as React.ComponentType<Record<string, unknown>>;
+const ModalFooter = HeroModalFooter as unknown as React.ComponentType<Record<string, unknown>>;
 
 interface FileUploadFormProps {
   userId: string;
@@ -186,13 +186,14 @@ export default function FileUploadForm({
         console.log("Calling onUploadSuccess callback");
         onUploadSuccess();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: Record<string, unknown>; status?: number } };
       console.error("❌ Error creating folder:", error);
-      console.error("Error response:", error.response?.data);
-      console.error("Error status:", error.response?.status);
+      console.error("Error response:", axiosError.response?.data);
+      console.error("Error status:", axiosError.response?.status);
       showToast("Folder Creation Failed", {
         type: "error",
-        description: error.response?.data?.error || error.response?.data?.details || "We couldn't create the folder. Please try again.",
+        description: (axiosError.response?.data?.error as string) || (axiosError.response?.data?.details as string) || "We couldn't create the folder. Please try again.",
       });
     } finally {
       setCreatingFolder(false);
