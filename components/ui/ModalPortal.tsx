@@ -10,12 +10,11 @@ interface ModalPortalProps {
   priority?: "high" | "normal";
 }
 
-// Using a class to better manage modal stack
 class ModalStack {
   private static instance: ModalStack;
   private baseZIndex = 9950;
   private modalCount = 0;
-  private highPriorityBase = 11000; // High priority modals start from 11000
+  private highPriorityBase = 11000;
 
   public static getInstance(): ModalStack {
     if (!ModalStack.instance) {
@@ -27,9 +26,9 @@ class ModalStack {
   getZIndex(priority: "high" | "normal" = "normal"): number {
     this.modalCount++;
     if (priority === "high") {
-      return this.highPriorityBase + (this.modalCount * 10);
+      return this.highPriorityBase + this.modalCount * 10;
     }
-    return this.baseZIndex + (this.modalCount * 10);
+    return this.baseZIndex + this.modalCount * 10;
   }
 
   releaseZIndex(): void {
@@ -41,10 +40,10 @@ export default function ModalPortal({
   isOpen,
   onBackdropClick,
   children,
-  priority = "normal"
+  priority = "normal",
 }: ModalPortalProps) {
   const [mounted, setMounted] = useState(false);
-  const [zIndex, setZIndex] = useState(() => 
+  const [zIndex, setZIndex] = useState(() =>
     ModalStack.getInstance().getZIndex(priority)
   );
 
@@ -65,24 +64,25 @@ export default function ModalPortal({
 
   return createPortal(
     <>
-      {/* Backdrop with blur effect */}
+      {/* 🔹 Background Overlay (dim + blur) */}
       <div
-        className={`fixed inset-0 transition-all duration-200 ${
-          priority === "high" 
-            ? "bg-black/60 backdrop-blur-md" 
-            : "bg-black/40"
-        }`}
-        style={{ zIndex }}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-all duration-300"
+        style={{
+          zIndex,
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+        }}
         onClick={onBackdropClick}
         role="presentation"
       />
-      {/* Modal Container */}
+
+      {/* 🔸 Modal Container */}
       <div
-        className={`fixed inset-0 pointer-events-none flex items-center justify-center p-4`}
+        className="fixed inset-0 flex items-center justify-center p-4"
         style={{ zIndex: zIndex + 1 }}
       >
-        <div 
-          className="pointer-events-auto transform transition-transform duration-200 w-full max-w-md"
+        <div
+          className="pointer-events-auto w-full max-w-md rounded-2xl bg-white text-black shadow-2xl transform transition-transform duration-300 scale-100"
         >
           {children}
         </div>
