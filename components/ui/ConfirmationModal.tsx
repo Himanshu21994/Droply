@@ -1,11 +1,4 @@
 import React from "react";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@heroui/modal";
 import { Button } from "@heroui/button";
 import { LucideIcon } from "lucide-react";
 import ModalPortal from "./ModalPortal";
@@ -39,8 +32,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isDangerous = false,
   warningMessage,
 }) => {
-  // Cast ModalContent for React 19 compatibility
-  const ModalContentComponent = ModalContent as unknown as React.ComponentType<{ children: React.ReactNode }>;
+  if (!isOpen) return null;
 
   return (
     <ModalPortal 
@@ -48,38 +40,21 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       onBackdropClick={() => onOpenChange(false)}
       priority={isDangerous ? "high" : "normal"}
     >
-      <Modal
-        isOpen={true}
-        onOpenChange={() => onOpenChange(false)}
-        backdrop="transparent"
-        hideCloseButton
-        classNames={{
-          base: `${
-            isDangerous 
-              ? "border-2 border-danger-200 bg-default-50 shadow-2xl"
-              : "border border-default-200 bg-default-50 shadow-2xl"
-          }`,
-          header: `${
-            isDangerous
-              ? "border-b border-danger-200 bg-danger-50"
-              : "border-b border-default-200 bg-default-100"
-          }`,
-          footer: `${
-            isDangerous
-              ? "border-t border-danger-200 bg-danger-50"
-              : "border-t border-default-200 bg-default-100"
-          }`,
-          backdrop: "hidden",
-        }}
-      >
-        <ModalContentComponent>
-        <ModalHeader className="flex gap-2 items-center">
+      <div className="p-6 bg-white dark:bg-gray-900">
+        {/* Header */}
+        <div className={`flex gap-2 items-center pb-4 border-b ${
+          isDangerous
+            ? "border-red-200 dark:border-red-800"
+            : "border-gray-200 dark:border-gray-700"
+        }`}>
           {Icon && <Icon className={`h-5 w-5 ${iconColor}`} />}
-          <span>{title}</span>
-        </ModalHeader>
-        <ModalBody>
+          <span className="text-xl font-semibold text-gray-900 dark:text-white">{title}</span>
+        </div>
+
+        {/* Body */}
+        <div className="py-4">
           {isDangerous && warningMessage && (
-            <div className="bg-danger-50 border border-danger-200 text-danger-700 p-4 rounded-lg mb-4">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 p-4 rounded-lg mb-4">
               <div className="flex items-start gap-3">
                 {Icon && (
                   <Icon
@@ -93,9 +68,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </div>
             </div>
           )}
-          <p>{description}</p>
-        </ModalBody>
-        <ModalFooter>
+          <p className="text-gray-700 dark:text-gray-300">{description}</p>
+        </div>
+
+        {/* Footer */}
+        <div className={`flex justify-end gap-2 pt-4 border-t ${
+          isDangerous
+            ? "border-red-200 dark:border-red-800"
+            : "border-gray-200 dark:border-gray-700"
+        }`}>
           <Button
             variant="flat"
             color="default"
@@ -113,9 +94,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           >
             {confirmText}
           </Button>
-        </ModalFooter>
-      </ModalContentComponent>
-    </Modal>
+        </div>
+      </div>
     </ModalPortal>
   );
 };

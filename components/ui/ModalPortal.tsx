@@ -74,15 +74,17 @@ export default function ModalPortal({
         }}
         onClick={onBackdropClick}
         role="presentation"
+        aria-hidden="true"
       />
 
       {/* 🔸 Modal Container */}
       <div
-        className="fixed inset-0 flex items-center justify-center p-4"
+        className="fixed inset-0 flex items-center justify-center p-4 pointer-events-none"
         style={{ zIndex: zIndex + 1 }}
       >
         <div
           className="pointer-events-auto w-full max-w-md rounded-2xl bg-white text-black shadow-2xl transform transition-transform duration-300 scale-100"
+          onClick={(e) => e.stopPropagation()}
         >
           {children}
         </div>

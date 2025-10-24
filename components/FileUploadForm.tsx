@@ -13,21 +13,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useToast } from "@/components/ui/ToastContainer";
-import {
-  Modal,
-  ModalContent as HeroModalContent,
-  ModalHeader as HeroModalHeader,
-  ModalBody as HeroModalBody,
-  ModalFooter as HeroModalFooter,
-} from "@heroui/modal";
 import axios from "axios";
 import ModalPortal from "@/components/ui/ModalPortal";
-
-// Wrapper components for HeroUI Modal to fix React 19 compatibility
-const ModalContent = HeroModalContent as unknown as React.ComponentType<Record<string, unknown>>;
-const ModalHeader = HeroModalHeader as unknown as React.ComponentType<Record<string, unknown>>;
-const ModalBody = HeroModalBody as unknown as React.ComponentType<Record<string, unknown>>;
-const ModalFooter = HeroModalFooter as unknown as React.ComponentType<Record<string, unknown>>;
 
 interface FileUploadFormProps {
   userId: string;
@@ -335,62 +322,57 @@ export default function FileUploadForm({
 
       {/* Create Folder Modal */}
       <ModalPortal isOpen={folderModalOpen} onBackdropClick={() => setFolderModalOpen(false)}>
-        <Modal
-          isOpen={true}
-          onOpenChange={() => setFolderModalOpen(false)}
-          backdrop="transparent"
-          classNames={{
-            base: "border border-default-200 bg-default-50",
-            header: "border-b border-default-200",
-            footer: "border-t border-default-200",
-            backdrop: "hidden",
-          }}
-        >
-          <ModalContent>
-            <ModalHeader className="flex gap-2 items-center">
-              <FolderPlus className="h-5 w-5 text-primary" />
-              <span>New Folder</span>
-            </ModalHeader>
-            <ModalBody>
-              <div className="space-y-4">
-                <p className="text-sm text-default-600">
-                  Enter a name for your folder:
-                </p>
-                <Input
-                  type="text"
-                  label="Folder Name"
-                  placeholder="My Images"
-                  value={folderName}
-                  onChange={(e) => setFolderName(e.target.value)}
-                  autoFocus
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter" && folderName.trim()) {
-                      handleCreateFolder();
-                    }
-                  }}
-                />
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                variant="flat"
-                color="default"
-                onClick={() => setFolderModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                color="primary"
-                onClick={handleCreateFolder}
-                isLoading={creatingFolder}
-                isDisabled={!folderName.trim()}
-                endContent={!creatingFolder && <ArrowRight className="h-4 w-4" />}
-              >
-                Create
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <div className="p-6 bg-white dark:bg-gray-900">
+          {/* Header */}
+          <div className="flex gap-2 items-center pb-4 border-b border-gray-200 dark:border-gray-700">
+            <FolderPlus className="h-5 w-5 text-primary" />
+            <span className="text-xl font-semibold text-gray-900 dark:text-white">New Folder</span>
+          </div>
+
+          {/* Body */}
+          <div className="py-4 space-y-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Enter a name for your folder:
+            </p>
+            <Input
+              type="text"
+              label="Folder Name"
+              placeholder="My Images"
+              value={folderName}
+              onChange={(e) => setFolderName(e.target.value)}
+              autoFocus
+              onKeyPress={(e) => {
+                if (e.key === "Enter" && folderName.trim()) {
+                  handleCreateFolder();
+                }
+              }}
+              classNames={{
+                input: "text-gray-900 dark:text-white",
+                label: "text-gray-700 dark:text-gray-300",
+              }}
+            />
+          </div>
+
+          {/* Footer */}
+          <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <Button
+              variant="flat"
+              color="default"
+              onClick={() => setFolderModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              onClick={handleCreateFolder}
+              isLoading={creatingFolder}
+              isDisabled={!folderName.trim()}
+              endContent={!creatingFolder && <ArrowRight className="h-4 w-4" />}
+            >
+              Create
+            </Button>
+          </div>
+        </div>
       </ModalPortal>
     </div>
   );
